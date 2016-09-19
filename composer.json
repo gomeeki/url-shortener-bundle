@@ -1,0 +1,12 @@
+{
+    "name": "gomeeki/url-shortener-bundle",
+    "description": "Symfony Bundle to provide URL Shortening and Redirection",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "hashids/hashids": "^1.0"
+    },
+    "autoload": {
+        "psr-4": { "Gomeeki\\Bundle\\UrlShortenerBundle\\": "" }
+    }
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="gomeeki_url_shortener.host_url">null</parameter>
+        <parameter key="gomeeki_url_shortener.hashids.salt">this is my salt</parameter>
+        <parameter key="gomeeki_url_shortener.hashids.min_length">0</parameter>
+        <parameter key="gomeeki_url_shortener.shorturl.class.entity">Gomeeki\Bundle\UrlShortenerBundle\Entity\ShortUrl</parameter>
+        <parameter key="gomeeki_url_shortener.shorturl.class.factory">Gomeeki\Bundle\UrlShortenerBundle\Factory\ShortUrlEntityFactory</parameter>
+        <parameter key="gomeeki_url_shortener.shorturl.class.repository">Gomeeki\Bundle\UrlShortenerBundle\Repository\DoctrineShortUrlRepository</parameter>
+    </parameters>
+    
+    <services>
+        <!-- hash library -->
+        <service id="gomeeki_url_shortener.hash.hashid" class="Hashids\Hashids">
+            <argument>%gomeeki_url_shortener.hashids.salt%</argument>
+            <argument>%gomeeki_url_shortener.hashids.min_length%</argument>
+        </service>
+
+        <!-- factory -->
+        <service id="gomeeki_url_shortener.factory.short_url"
+                 class="%gomeeki_url_shortener.shorturl.class.factory%">
+        </service>
+
+        <!-- repository -->
+        <service id="gomeeki_url_shortener.repository.doctrine_short_url"
+                 class="%gomeeki_url_shortener.shorturl.class.repository%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument>%gomeeki_url_shortener.shorturl.class.entity%</argument>
+        </service>
+
+        <!-- services -->
+        <service id="gomeeki_url_shortener.process"
+                 class="Gomeeki\Bundle\UrlShortenerBundle\Service\ProcessShortUrlService">
+            <argument type="service" id="gomeeki_url_shortener.hash.hashid"/>
+            <argument type="service" id="gomeeki_url_shortener.repository.doctrine_short_url"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="gomeeki_url_shortener.get_redirect_response"
+                 class="Gomeeki\Bundle\UrlShortenerBundle\Service\GetRedirectUrlService">
+            <argument type="service" id="gomeeki_url_shortener.repository.doctrine_short_url"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+    </services>
+</container>
