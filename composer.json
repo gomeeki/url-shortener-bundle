@@ -4,9 +4,15 @@
     "type": "library",
     "license": "MIT",
     "require": {
+        "symfony/framework-bundle": "~2.3|~3.0",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
         "hashids/hashids": "^1.0"
     },
     "autoload": {
         "psr-4": { "Gomeeki\\Bundle\\UrlShortenerBundle\\": "" }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.1"
     }
 }
