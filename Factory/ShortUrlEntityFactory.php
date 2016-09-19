@@ -3,6 +3,7 @@
 namespace Gomeeki\Bundle\UrlShortenerBundle\Factory;
 
 use Gomeeki\Bundle\UrlShortenerBundle\Entity\ShortUrl;
+use Gomeeki\Bundle\UrlShortenerBundle\Entity\ShortUrlInterface;
 use Gomeeki\Bundle\UrlShortenerBundle\Exception\UrlIsNotValidException;
 
 /**
@@ -11,6 +12,20 @@ use Gomeeki\Bundle\UrlShortenerBundle\Exception\UrlIsNotValidException;
  */
 class ShortUrlEntityFactory implements ShortUrlEntityFactoryInterface
 {
+    /**
+     * @var string
+     */
+    protected $shortUrlEntityClass;
+
+    /**
+     * ShortUrlEntityFactory constructor.
+     * @param string $shortUrlEntityClass
+     */
+    public function __construct($shortUrlEntityClass)
+    {
+        $this->shortUrlEntityClass = $shortUrlEntityClass;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -23,7 +38,8 @@ class ShortUrlEntityFactory implements ShortUrlEntityFactoryInterface
 
         $url = rtrim($data['url'], '/');
 
-        $shortUrl = new ShortUrl();
+        /** @var ShortUrlInterface $shortUrl */
+        $shortUrl = new $this->shortUrlEntityClass();
         $shortUrl->setUrl($url);
 
         $code = null;

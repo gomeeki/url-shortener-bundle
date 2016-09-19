@@ -30,9 +30,12 @@ class DoctrineShortUrlRepository extends EntityRepository implements ShortUrlRep
     {
         $qb = $this->createQueryBuilder('su');
         $qb->where('su.url = :url')
+            ->andWhere('su.customCode = false')
             ->setParameter('url', $shortUrl->getUrl());
 
-        return $qb->getQuery()->getOneOrNullResult();
+        $results = $qb->getQuery()->getResult();
+
+        return (0 === count($results)) ? null : $results[0];
     }
 
     /**

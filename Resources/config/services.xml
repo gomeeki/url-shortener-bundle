@@ -23,6 +23,7 @@
         <!-- factory -->
         <service id="gomeeki_url_shortener.factory.short_url"
                  class="%gomeeki_url_shortener.shorturl.class.factory%">
+            <argument>%gomeeki_url_shortener.shorturl.class.entity%</argument>
         </service>
 
         <!-- repository -->
