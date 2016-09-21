@@ -22,8 +22,7 @@ class ShortUrl extends AbstractShortUrl
     public function __construct()
     {
         $this->created = new \DateTime();
-        $this->customCode = false;
-        $this->hits = 0;
+        parent::__construct();
     }
 
     /**
