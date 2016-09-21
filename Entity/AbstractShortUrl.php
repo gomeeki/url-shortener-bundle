@@ -44,7 +44,7 @@ class AbstractShortUrl implements ShortUrlInterface
     /**
      * AbstractShortUrl constructor.
      */
-    protected function __construct()
+    public function __construct()
     {
         $this->customCode = false;
         $this->hits = 0;
