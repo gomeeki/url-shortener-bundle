@@ -2,7 +2,7 @@
 
 namespace Gomeeki\Bundle\UrlShortenerBundle\Controller;
 
-use Gomeeki\Bundle\UrlShortenerBundle\Factory\ShortUrlEntityFactory;
+use Gomeeki\Bundle\UrlShortenerBundle\Factory\ShortUrlEntityFactoryInterface;
 use Gomeeki\Bundle\UrlShortenerBundle\Service\ProcessShortUrlService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,11 +19,12 @@ class ShortUrlController extends Controller
 {
     /**
      * @param Request $request
-     * @return JsonResponse|BadRequestHttpException
+     * @return JsonResponse
+     * @throws BadRequestHttpException
      */
     public function createShortUrlAction(Request $request)
     {
-        /** @var ShortUrlEntityFactory $shortUrlFactory */
+        /** @var ShortUrlEntityFactoryInterface $shortUrlFactory */
         /** @var ProcessShortUrlService $processShortUrlService */
         $shortUrlFactory = $this->get('gomeeki_url_shortener.factory.short_url');
         $processShortUrlService = $this->get('gomeeki_url_shortener.process');
