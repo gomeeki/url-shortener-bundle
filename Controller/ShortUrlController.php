@@ -2,10 +2,14 @@
 
 namespace Gomeeki\Bundle\UrlShortenerBundle\Controller;
 
+use Gomeeki\Bundle\UrlShortenerBundle\Factory\ShortUrlEntityFactoryInterface;
+use Gomeeki\Bundle\UrlShortenerBundle\Service\ProcessShortUrlService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Gomeeki\Bundle\UrlShortenerBundle\Exception;
 
 /**
  * Class ShortUrlController
@@ -16,9 +20,12 @@ class ShortUrlController extends Controller
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws BadRequestHttpException
      */
     public function createShortUrlAction(Request $request)
     {
+        /** @var ShortUrlEntityFactoryInterface $shortUrlFactory */
+        /** @var ProcessShortUrlService $processShortUrlService */
         $shortUrlFactory = $this->get('gomeeki_url_shortener.factory.short_url');
         $processShortUrlService = $this->get('gomeeki_url_shortener.process');
 
@@ -29,10 +36,16 @@ class ShortUrlController extends Controller
         $shortUrl = $shortUrlFactory->createFromArray($data);
 
         // 3. Process the ShortUrl
-        if ($shortUrl->isCustomCode()) {
-            $shortUrl = $processShortUrlService->processCustomCode($shortUrl);
-        } else {
-            $shortUrl = $processShortUrlService->process($shortUrl);
+        try {
+            if ($shortUrl->isCustomCode()) {
+                $shortUrl = $processShortUrlService->processCustomCode($shortUrl);
+            } else {
+                $shortUrl = $processShortUrlService->process($shortUrl);
+            }
+        } catch (Exception\DecodeUnallowedResultException $e){
+            throw new BadRequestHttpException($e->getMessage(), $e);
+        } catch (Exception\CustomCodeAlreadyTakenException $e) {
+            throw new BadRequestHttpException($e->getMessage(), $e);
         }
 
         // 4. Generate the Short Code Url
