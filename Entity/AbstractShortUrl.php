@@ -19,7 +19,7 @@ class AbstractShortUrl implements ShortUrlInterface
 
     /**
      * @var string
-     * @ORM\Column(name="code", type="string", unique=true, nullable=true)
+     * @ORM\Column(name="code", type="string", unique=true, nullable=true, options={"collation":"utf8_bin"})
      */
     protected $code;
 
